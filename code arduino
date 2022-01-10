@@ -1,0 +1,40 @@
+// Sensor pins
+#define sensorPower 7
+#define sensorPin A0
+#include <Servo.h>
+Servo myservo; // create servo object to control a servo
+
+int val; // variable to read the value from the analog pin
+
+void setup() {
+  Serial.begin(115200);
+  // Set D7 as an OUTPUT
+  pinMode(sensorPower, OUTPUT);
+  // Set to LOW so no power flows through the sensor
+  digitalWrite(sensorPower, LOW);
+  myservo.attach(3); // attaches the servo on pin 3 to the servo object
+}
+
+void loop() {
+  //get the reading from the function below and print it
+  int level = readSensor();
+  if (level >= 250) {
+    myservo.write(16); // sets the servo position according to the scaled value
+    delay(10000);
+    myservo.write(0); // sets the servo position according to the scaled value
+
+  }
+  Serial.print("Water level: ");
+  Serial.println(level);
+  
+  delay(1000);
+}
+
+//This is a function used to get the reading
+int readSensor() {
+  digitalWrite(sensorPower, HIGH);  // Turn the sensor ON
+  delay(10);              // wait 10 milliseconds
+  val = analogRead(sensorPin);    // Read the analog value form sensor
+  digitalWrite(sensorPower, LOW);   // Turn the sensor OFF
+  return val;             // send current reading
+}
